@@ -2,7 +2,7 @@ from aiogram.dispatcher.storage import FSMContext
 from telethon import TelegramClient
 import logging
 from config import TOKEN 
-from aiogram import Bot, Dispatcher, types, executor
+from aiogram import Bot, Dispatcher, types, executor, api_id, api_hash
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
@@ -11,8 +11,6 @@ bot = Bot(token=TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
-api_id = 7152512
-api_hash = '06b1af71c938ec3883ce24f5bbb3909a'
 
 
 class Telephone(StatesGroup):
