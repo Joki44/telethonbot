@@ -1,8 +1,8 @@
 from aiogram.dispatcher.storage import FSMContext
 from telethon import TelegramClient
 import logging
-from config import TOKEN 
-from aiogram import Bot, Dispatcher, types, executor, api_id, api_hash
+from config import TOKEN,  api_id, api_hash
+from aiogram import Bot, Dispatcher, types, executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
@@ -10,13 +10,16 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
-
-
+clients = {}
 
 class Telephone(StatesGroup):
     telephone = State()
 
 
+    # clients['+79013301420'] = TelegramClient('+79013301420', api_id, api_hash)
+    # clients['+79013301421'] = TelegramClient('+79013301421', api_id, api_hash)
+    # print(clients)
+    # clients['+79013301420'].start()
 class Kod(StatesGroup):
     kod = State()
 
@@ -34,11 +37,11 @@ async def proposalConfirm(message: types.Message, state: FSMContext):
 
     await Telephone.next()
     await Kod.kod.set() 
-    global client
-    client = TelegramClient(data['telephone'], api_id, api_hash)
+
+    clients[data['telephone']] = TelegramClient(data['telephone'], api_id, api_hash)
     
-    await client.connect()
-    await client.send_code_request(data['telephone'])
+    await clients[data['telephone']].connect()
+    await clients[data['telephone']].send_code_request(data['telephone'])
 
 
     await bot.send_message(message.from_user.id, 
@@ -54,11 +57,10 @@ async def proposalConfirm(message: types.Message, state: FSMContext):
         telephone = data['telephone']
 
     await Kod.next()
+      
     
-    global client   
-    
-    await client.sign_up(data['kod'], first_name='анон', last_name='анон')
-    client.disconnect()
+    await clients[data['telephone']].sign_up(data['kod'], first_name='анон', last_name='анон')
+    clients[data['telephone']].disconnect()
 
     await bot.send_document(message.from_user.id, open(f'{telephone}.session', 'rb'))
 
