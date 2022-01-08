@@ -16,10 +16,6 @@ class Telephone(StatesGroup):
     telephone = State()
 
 
-    # clients['+79013301420'] = TelegramClient('+79013301420', api_id, api_hash)
-    # clients['+79013301421'] = TelegramClient('+79013301421', api_id, api_hash)
-    # print(clients)
-    # clients['+79013301420'].start()
 class Kod(StatesGroup):
     kod = State()
 
